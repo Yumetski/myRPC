@@ -20,7 +20,7 @@ type Codec interface {
 	Write(*Header, interface{}) error
 }
 
-type NewCodecFunc func(io.Reader) Codec
+type NewCodecFunc func(closer io.ReadWriteCloser) Codec
 type Type string
 
 const (
@@ -32,5 +32,5 @@ var NewCodecFuncMap map[Type]NewCodecFunc
 
 func init() {
 	NewCodecFuncMap = make(map[Type]NewCodecFunc)
-
+	NewCodecFuncMap[GobType] = NewGobCodec
 }
