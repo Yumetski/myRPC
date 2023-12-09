@@ -36,14 +36,15 @@ func (g GobCodec) ReadBody(body interface{}) error {
 	return g.dec.Decode(body)
 }
 
-func (g GobCodec) Write(header *Header, body interface{}) error {
+func (g GobCodec) Write(header *Header, body interface{}) (err error) {
 	defer func() {
-		if err := g.buf.Flush(); err != nil {
+		_ = g.buf.Flush()
+		if err != nil {
 			_ = g.Close()
 		}
 	}()
 	if err := g.enc.Encode(header); err != nil {
-		log.Println("rpc codec: gob error encoding header:", err)
+		log.Println("rpc codec: gob err or encoding header:", err)
 		return err
 	}
 	if err := g.enc.Encode(body); err != nil {

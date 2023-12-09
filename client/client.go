@@ -84,6 +84,7 @@ func (client *Client) receive() {
 	for err == nil {
 		var h codec.Header
 		if err = client.cc.ReadHeader(&h); err != nil {
+			log.Println("receive error: ", err)
 			break
 		}
 		call := client.removeCall(h.Seq)
