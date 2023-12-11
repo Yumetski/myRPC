@@ -8,6 +8,7 @@ import (
 	"log"
 	"myrpc/codec"
 	"net"
+	"net/http"
 	"reflect"
 	"strings"
 	"sync"
@@ -15,6 +16,12 @@ import (
 )
 
 const MagicNumber = 0x3bef5c
+
+const (
+	connected        = "200 Connected to My RPC"
+	defaultRPCPath   = "/_myrpc"
+	defaultDebugPath = "/debug/myrpc"
+)
 
 type Option struct {
 	MagicNumber    int
@@ -216,4 +223,33 @@ func (server *Server) findService(serviceMethod string) (svc *service, mtype *me
 		err = errors.New("rpc server: can't find method " + methodName)
 	}
 	return
+}
+
+func (server *Server) ServerHTTP(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "CONNECT" {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		_, _ = io.WriteString(w, "405 must CONNECT\n")
+		return
+	}
+	conn, _, err := w.(http.Hijacker).Hijack()
+	if err != nil {
+		log.Print("rpc hijacking ", req.RemoteAddr, ": ", err.Error())
+		return
+	}
+	_, _ = io.WriteString(conn, "HTTP/1.0 "+connected+"\n\n")
+	server.ServerConn(conn)
+}
+
+func (server *Server) HandleHTTP() {
+	http.Handle(defaultRPCPath, server)
+}
+
+func HandleHTTP() {
+	DefaultServer.HandleHTTP()
+}
+
+func (server *Server) ServeHTTP(writer http.ResponseWriter, r *http.Request) {
+	//TODO implement me
+	panic("implement me")
 }
