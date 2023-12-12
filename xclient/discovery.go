@@ -15,7 +15,7 @@ const (
 	RoundRobinSelect
 )
 
-type Discover interface {
+type Discovery interface {
 	Refresh() error                      //从注册中心更新服务列表
 	Update(servers []string) error       //手动更新服务列表
 	Get(mode SelectMode) (string, error) //根据负载均衡策略，选择一个服务实例
@@ -78,4 +78,4 @@ func (m MultiServersDiscovery) GetAll() ([]string, error) {
 	return servers, nil
 }
 
-var _ Discover = (*MultiServersDiscovery)(nil)
+var _ Discovery = (*MultiServersDiscovery)(nil)

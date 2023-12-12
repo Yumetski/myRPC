@@ -225,7 +225,7 @@ func (server *Server) findService(serviceMethod string) (svc *service, mtype *me
 	return
 }
 
-func (server *Server) ServerHTTP(w http.ResponseWriter, req *http.Request) {
+func (server *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "CONNECT" {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -247,9 +247,4 @@ func (server *Server) HandleHTTP() {
 
 func HandleHTTP() {
 	DefaultServer.HandleHTTP()
-}
-
-func (server *Server) ServeHTTP(writer http.ResponseWriter, r *http.Request) {
-	//TODO implement me
-	panic("implement me")
 }

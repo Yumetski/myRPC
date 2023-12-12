@@ -10,14 +10,14 @@ import (
 )
 
 type XClient struct {
-	d       Discover
+	d       Discovery
 	mode    SelectMode
 	opt     *server.Option
 	mu      sync.Mutex
 	clients map[string]*client.Client
 }
 
-func NewXClient(d Discover, mode SelectMode, opt *server.Option) *XClient {
+func NewXClient(d Discovery, mode SelectMode, opt *server.Option) *XClient {
 	return &XClient{
 		d:       d,
 		opt:     opt,
